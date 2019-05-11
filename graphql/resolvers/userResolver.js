@@ -1,42 +1,34 @@
-const crypto = require('crypto');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const { UserInputError } = require('apollo-server-express');
 
-const db = {
-  users: [
-    { id: '1', email: 'andreas@stopat.de', username: 'demonsgalore', firstname: 'Andreas', lastname: 'Stopat', avatarUrl: 'http://image.png', createdAt: Date.now() },
-    { id: '2', email: 'robert@stark.de', username: 'YoungWolf', firstname: 'Robert', lastname: 'Stark', avatarUrl: 'http://image.png', createdAt: Date.now() }
-  ],
-  messages: [
-    { id: '1', userId: '1', body: 'Hello', createdAt: Date.now() },
-    { id: '2', userId: '2', body: 'Hey', createdAt: Date.now() },
-    { id: '3', userId: '1', body: 'Waddup?', createdAt: Date.now() },
-  ]
-};
+const User = require('../../models/User');
 
 module.exports = {
   Query: {
-    user: (root, args, context, info) => {
-      return db.users.find(user => user.id === args.id)
+    user: (root, { id }, context, info) => {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        throw new UserInputError(`${id} is not a valid user ID.`)
+      }
+      return User.findById(id);
     },
     users: (root, args, context, info) => {
-      return db.users;
+      return User.find({});
     }
   },
   Mutation: {
-    signUp: (root, args, context, info) => {
+    signUp: async (root, args, context, info) => {
       const { email, username, firstname, lastname, password } = args;
-      const user = {
-        id: crypto.randomBytes(10).toString('hex'),
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const newUser = new User({
         email,
+        username,
         firstname,
         lastname,
-        username,
-        password
-      };
-
-      db.users.push(user)
-
-      return user
+        password: hashedPassword,
+      });
+      const user = await newUser.save();
+      return user;
     }
   }
-
 };
