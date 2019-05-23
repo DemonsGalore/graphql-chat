@@ -3,7 +3,8 @@ const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 
 const resolvers = require('./graphql/resolvers');
-const schema = require('./graphql/schemas');
+// const schema = require('./graphql/schemas');
+const schema = require('./graphql/schema');
 
 const { mongoURI, inProduction } = require('./config/keys');
 
@@ -13,10 +14,13 @@ app.disable('x-powered-by');
 
 // ApolloServer initialization
 const server = new ApolloServer({
-  typeDefs: schema,
-  resolvers,
-  playground: inProduction
+  schema,
 });
+// const server = new ApolloServer({
+//   typeDefs: schema,
+//   resolvers,
+//   playground: !inProduction
+// });
 server.applyMiddleware({ app });
 
 // connect to MongoDB
@@ -32,4 +36,4 @@ mongoose
     app.listen(PORT, () =>
       console.log(`Server started at http://localhost:${PORT}`));
   })
-.catch(error => console.log("Error", error));
+  .catch(error => console.log("Error", error));
