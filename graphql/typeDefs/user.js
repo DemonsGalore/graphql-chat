@@ -24,5 +24,6 @@ module.exports = gql`
     firstname: String!
     lastname: String!
     createdAt: String!
+    updatedAt: String!
   }
 `;

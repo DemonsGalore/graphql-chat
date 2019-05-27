@@ -19,13 +19,10 @@ module.exports = {
   },
   Mutation: {
     signUp: async (root, args, context, info) => {
-      const { errors, isValid } = validateSignUpInput(args);
-      console.log(errors);
-      console.log(isValid);
+      const { errors, isValid } = await validateSignUpInput(args);
       // check validation
       if (!isValid) {
-        // return res.status(400).json(errors);
-        console.log("MOEP");
+        console.log(errors);
         return errors;
       }
 
@@ -39,7 +36,6 @@ module.exports = {
         lastname,
         password: hashedPassword,
       });
-      console.log(newUser);
       const user = await newUser.save();
 
       return user;
