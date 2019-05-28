@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
   extend type Query {
+    me: User
     user(id: ID!): User
     users: [User!]!
   }
@@ -15,6 +16,8 @@ module.exports = gql`
       password: String!,
       confirmPassword: String!
     ): User
+    signIn(username: String!, password: String!): User
+    signOut: Boolean
   }
 
   type User {

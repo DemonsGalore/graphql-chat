@@ -1,21 +1,55 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
+const session = require('express-session');
+// const RedisStore = require('connect-redis')(session);
+const MongoStore = require('connect-mongo')(session);
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 
-const { mongoURI, inProduction } = require('./config/keys');
+const {
+  mongoURI,
+  inProduction,
+  sessionID,
+  sessionSecret,
+  sessionLifetime,
+} = require('./config/keys');
 
 // ExpressServer initialization
 const app = express();
 app.disable('x-powered-by');
 
+// const store = new RedisStore({
+//   host: redisHost,
+//   port: redisPort,
+//   pass: redisPassword
+// });
+
+app.use(session({
+  store: new MongoStore({ url: mongoURI }),
+  name: sessionID,
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: sessionLifetime,
+    sameSite: true,
+    secure: inProduction
+  }
+}));
+
 // ApolloServer initialization
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  playground: !inProduction
+  cors: false,
+  playground: inProduction ? false : {
+    settings: {
+      'request.credentials': 'include'
+    }
+  },
+  context: ({ req, res }) => ({ req, res })
 });
 server.applyMiddleware({ app });
 

@@ -26,10 +26,13 @@
   "dependencies": {
     "apollo-server-express": "^2.5.0",
     "bcryptjs": "^2.4.3",
+    "connect-mongo": "^2.0.3",
+    "connect-redis": "^3.4.1",
     "express": "^4.17.0",
+    "express-session": "^1.16.1",
     "graphql": "^14.3.1",
     "mongoose": "^5.5.11",
-    "validator": "^10.11.0"
+    "validator": "^11.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

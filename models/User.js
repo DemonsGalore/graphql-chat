@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
   email: {
@@ -38,6 +39,10 @@ const userSchema = new Schema({
 
 userSchema.statics.doesntExist = async function (options) {
   return await this.where(options).countDocuments() === 0;
+}
+
+userSchema.methods.matchesPassword = function (password) {
+  return bcrypt.compare(password, this.password);
 }
 
 module.exports = User = mongoose.model('users', userSchema);
