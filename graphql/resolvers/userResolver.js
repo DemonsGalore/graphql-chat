@@ -6,8 +6,6 @@ const User = require('../../models/User');
 const validateSignUpInput = require('../../validation/signup');
 const validateSignInInput = require('../../validation/signin');
 const {
-  checkSignedIn,
-  checkSignedOut,
   attemptSignIn,
   signOut
 } = require('../auth');
@@ -15,21 +13,15 @@ const {
 module.exports = {
   Query: {
     me: (root, args, { req }, info) => {
-      checkSignedIn(req);
-
       return User.findById(req.session.userId);
     },
-    user: (root, { id }, { req }, info) => {
-      checkSignedIn(req);
-
+    user: (root, { id }, context, info) => {
       if (mongoose.Types.ObjectId.isValid(id)) {
         throw new UserInputError(`${id} is not a valid user ID.`)
       }
       return User.findById(id);
     },
     users: (root, args, context, info) => {
-      // isAuth(req);
-
       return User.find({});
     }
   },
@@ -57,13 +49,7 @@ module.exports = {
 
       return user;
     },
-    signIn: async (root, args, { req, res }, info) => {
-      const { userId } = req.session;
-
-      if (userId) {
-        return User.findById(userId);
-      }
-
+    signIn: async (root, args, { req }, info) => {
       const { username, password } = args;
       const { errors, isValid } = await validateSignInInput(args);
 
@@ -79,7 +65,6 @@ module.exports = {
       return user;
     },
     signOut: (root, args, { req, res }, info) => {
-      checkSignedIn(req);
       return signOut(req, res);
     }
   }

@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
+const schemaDirectives = require('./graphql/directives');
 
 const {
   mongoURI,
@@ -19,12 +20,6 @@ const {
 // ExpressServer initialization
 const app = express();
 app.disable('x-powered-by');
-
-// const store = new RedisStore({
-//   host: redisHost,
-//   port: redisPort,
-//   pass: redisPassword
-// });
 
 app.use(session({
   store: new MongoStore({ url: mongoURI }),
@@ -43,7 +38,7 @@ app.use(session({
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  cors: false,
+  schemaDirectives,
   playground: inProduction ? false : {
     settings: {
       'request.credentials': 'include'
@@ -51,7 +46,7 @@ const server = new ApolloServer({
   },
   context: ({ req, res }) => ({ req, res })
 });
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, cors: false });
 
 // connect to MongoDB
 mongoose

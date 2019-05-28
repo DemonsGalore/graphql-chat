@@ -1,0 +1,39 @@
+// example queries
+
+mutation{
+  signUp(
+    email:"andreas.stopat@demonsgalore.de",
+    username:"demonsgalore",
+    firstname:"Andreas",
+    lastname:"Stopat",
+    password:"pass1234",
+  	confirmPassword:"pass1234"
+  ) {
+    id
+    username
+    lastname
+  }
+}
+
+query{
+  users{
+    id
+    username
+    email
+  }
+}
+
+mutation{
+  signIn(
+    username: "demonsgalore",
+    password: "pass1234"
+  ) {
+    username
+  }
+}
+
+mutation{
+  signOut
+}
+
+{me{username}}

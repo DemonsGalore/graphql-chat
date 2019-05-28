@@ -16,16 +16,16 @@ const attemptSignIn = async (username, password) => {
   return user;
 }
 
-const isAuth = req => req.session.userId;
+const signedIn = req => req.session.userId;
 
-const checkSignedIn = req => {
-  if (!isAuth(req)) {
-    throw new AuthenticationError('Not authenticated.');
+const ensureSignedIn = req => {
+  if (!signedIn(req)) {
+    throw new AuthenticationError('You are not signed in.');
   }
 };
 
-const checkSignedOut = req => {
-  if (isAuth(req)) {
+const ensureSignedOut = req => {
+  if (signedIn(req)) {
     throw new AuthenticationError('You are already signed in.');
   }
 };
@@ -41,5 +41,5 @@ const signOut = (req, res) => new Promise(
 );
 
 module.exports = {
-  attemptSignIn, checkSignedIn, checkSignedOut, signOut
+  attemptSignIn, ensureSignedIn, ensureSignedOut, signOut
 };
