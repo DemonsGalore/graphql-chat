@@ -25,7 +25,7 @@ app.use(session({
   store: new MongoStore({ url: mongoURI }),
   name: sessionID,
   secret: sessionSecret,
-  resave: false,
+  resave: true, rolling: true, // resave session and update cookie
   saveUninitialized: false,
   cookie: {
     maxAge: sessionLifetime,
