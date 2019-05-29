@@ -2,7 +2,7 @@
 
 mutation{
   signUp(
-    email:"andreas.stopat@demonsgalore.de",
+    email:"demonsgalore@demonsgalore.de",
     username:"demonsgalore",
     firstname:"Andreas",
     lastname:"Stopat",

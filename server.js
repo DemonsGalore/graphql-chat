@@ -2,7 +2,6 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-// const RedisStore = require('connect-redis')(session);
 const MongoStore = require('connect-mongo')(session);
 
 const typeDefs = require('./graphql/typeDefs');
