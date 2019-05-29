@@ -1,5 +1,7 @@
-const userResolver = require('./userResolver');
+const chat = require('./chat');
+const user = require('./user');
 
-module.exports = {
-  ...userResolver,
-};
+module.exports = [
+  chat,
+  user,
+];

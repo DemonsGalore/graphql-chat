@@ -43,6 +43,14 @@ const userSchema = new Schema({
   timestamps: true
 });
 
+// hashes the password before it is stored in the database
+userSchema.pre('save', async function() {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+});
+
+// checks if the option value does not exists in the database
 userSchema.statics.doesntExist = async function (options) {
   return await this.where(options).countDocuments() === 0;
 }

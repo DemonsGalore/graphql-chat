@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const { UserInputError } = require('apollo-server-express');
 
-const User = require('../../models/User');
+const { User } = require('../../models');
+
 const validateSignUpInput = require('../../validation/signup');
 const validateSignInInput = require('../../validation/signin');
 const {
@@ -28,6 +28,7 @@ module.exports = {
   Mutation: {
     signUp: async (root, args, { req }, info) => {
       const { errors, isValid } = await validateSignUpInput(args);
+
       // check validation
       if (!isValid) {
         return errors;
@@ -35,13 +36,12 @@ module.exports = {
 
       // create new user
       const { email, username, firstname, lastname, password } = args;
-      const hashedPassword = await bcrypt.hash(password, 12);
       const newUser = new User({
         email,
         username,
         firstname,
         lastname,
-        password: hashedPassword,
+        password,
       });
       const user = await newUser.save();
 
@@ -66,6 +66,13 @@ module.exports = {
     },
     signOut: (root, args, { req, res }, info) => {
       return signOut(req, res);
+    },
+  },
+  User: {
+    chats: async (user, args, context, info) => {
+      await user.populate('chats').execPopulate();
+
+      return user.chats;
     }
   }
 };

@@ -1,3 +1,9 @@
-module.exports = require('./Chat');
-module.exports = require('./Message');
-module.exports = require('./User');
+const Chat = require('./Chat');
+const Message = require('./Message');
+const User = require('./User');
+
+module.exports = {
+  Chat,
+  Message,
+  User,
+};
