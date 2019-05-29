@@ -26,6 +26,8 @@ module.exports = gql`
     username: String!
     firstname: String!
     lastname: String!
+    role: String!
+    chats: [Chat!]!
     createdAt: String!
     updatedAt: String!
   }
